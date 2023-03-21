@@ -4,9 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-prisma = "*"
-prisma-client = "*"
 python-dotenv = "*"
+prisma = "*"
 
 [dev-packages]
 

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ce97733776b92fdc1539940bbda96c2085bf22dc6619a619883a96b7c885ea1e"
+            "sha256": "4d229bcd0501d06e244178c3e77d25a264e3ad7a18eda400e7d912bc66e98839"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -151,14 +151,6 @@
             ],
             "index": "pypi",
             "version": "==0.8.2"
-        },
-        "prisma-client": {
-            "hashes": [
-                "sha256:71a24ae148f083f7946f0b9daec9aa426b1d06dfdb80261b8567865d015a9b8e",
-                "sha256:bee18aa7bb97b892e734cbcaf3e770d79c735b8fda3285ef7772d2b2a305ffb7"
-            ],
-            "index": "pypi",
-            "version": "==0.2.1"
         },
         "pydantic": {
             "hashes": [
