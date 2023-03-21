@@ -1,0 +1,387 @@
+generator client {
+  provider = "prisma-client-py"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Weather {
+  fine
+  cloudy
+  rainy
+  snowy
+  typhoon
+  fog
+}
+
+enum ExchangedParts {
+  electrical_system
+  carburetor
+  piston
+  piston_ring
+  cylinder
+  crankshaft
+  gear_case
+  carrier_body
+}
+
+enum WinningTrick {
+  nige
+  sashi
+  makuri
+  makurizashi
+  nuki
+  megumare
+}
+
+enum Disqualification {
+  capsize
+  fall
+  sinking
+  violation
+  disqualification_after_start
+  engine_stop
+  unfinished
+  repayment_other_than_flying_and_lateness
+  flying
+  lateness
+  absent
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum RacerStatus {
+  active
+  retired
+}
+
+enum EventKind {
+  uncategorized
+  all_ladies
+  venus
+  rookie
+  senior
+  double_winner
+  tournament
+}
+
+enum SeriesGrade {
+  sg
+  g1
+  g2
+  g3
+  no_grade
+}
+
+enum WaterQuality {
+  fresh
+  brackish
+  sea
+}
+
+enum BettingMethod {
+  trifecta
+}
+
+
+model boat_betting_contribute_rate_aggregations {
+  stadium_tel_code Int
+  boat_number      Int
+  aggregated_on    DateTime @db.Date
+  quinella_rate    Float    @db.Float
+  trio_rate        Float?   @db.Float
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_ec282bff7d")
+
+  @@id([stadium_tel_code, boat_number, aggregated_on])
+}
+
+model boat_settings {
+  stadium_tel_code  Int
+  date              DateTime @db.Date
+  race_number       Int
+  pit_number        Int
+  boat_number       Int
+  motor_number      Int
+  tilt              Float    @db.Float
+  propeller_renewed Boolean
+  created_at        DateTime @db.DateTime(6)
+  updated_at        DateTime @db.DateTime(6)
+  stadiums          stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_572d216c26")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+  @@unique([stadium_tel_code, date, race_number, boat_number], map: "uniq_index_1")
+  @@unique([stadium_tel_code, date, race_number, motor_number], map: "uniq_index_2")
+}
+
+model circumference_exhibition_records {
+  stadium_tel_code      Int
+  date                  DateTime @db.Date
+  race_number           Int
+  pit_number            Int
+  exhibition_time       Float    @db.Float
+  exhibition_time_order Int
+  created_at            DateTime @db.DateTime(6)
+  updated_at            DateTime @db.DateTime(6)
+  stadiums              stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_2ec4c19df6")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+}
+
+model disqualified_race_entries {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  pit_number       Int
+  disqualification Disqualification
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_e7d94e7a46")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+}
+
+model events {
+  stadium_tel_code Int
+  starts_on        DateTime @db.Date
+  title            String   @db.VarChar(255)
+  grade            SeriesGrade
+  kind             EventKind
+  canceled         Boolean  @default(false)
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_592c94ca33")
+
+  @@id([stadium_tel_code, starts_on, title])
+}
+
+model motor_betting_contribute_rate_aggregations {
+  stadium_tel_code Int
+  motor_number     Int
+  aggregated_on    DateTime @db.Date
+  quinella_rate    Float    @db.Float
+  trio_rate        Float?   @db.Float
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_2058c962fe")
+
+  @@id([stadium_tel_code, motor_number, aggregated_on])
+}
+
+model motor_maintenances {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  motor_number     Int
+  exchanged_parts  ExchangedParts
+  quantity         Int
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_5245f5f097")
+
+  @@id([stadium_tel_code, date, race_number, motor_number, exchanged_parts])
+}
+
+model motor_renewals {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_482054f143")
+
+  @@id([stadium_tel_code, date])
+}
+
+model odds {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  betting_method   BettingMethod
+  betting_number   Int
+  ratio            Float    @db.Float
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_32f672cf9a")
+
+  @@id([stadium_tel_code, date, race_number, betting_method, betting_number])
+}
+
+model payoffs {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  betting_method   BettingMethod
+  betting_number   Int
+  amount           Int
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_e5aa048390")
+
+  @@id([stadium_tel_code, date, race_number, betting_method, betting_number])
+}
+
+model race_entries {
+  stadium_tel_code          Int
+  date                      DateTime @db.Date
+  race_number               Int
+  racer_registration_number Int
+  pit_number                Int
+  created_at                DateTime @db.DateTime(6)
+  updated_at                DateTime @db.DateTime(6)
+  stadiums                  stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_9545dd91ad")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+  @@unique([stadium_tel_code, date, race_number, racer_registration_number], map: "uniq_index_1")
+}
+
+model race_records {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  pit_number       Int
+  course_number    Int
+  start_time       Float?   @db.Float
+  start_order      Int?
+  race_time        Float?   @db.Float
+  arrival          Int?
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_2a540c71c9")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+}
+
+model racer_conditions {
+  racer_registration_number Int
+  date                      DateTime @db.Date
+  weight                    Float    @db.Float
+  adjust                    Float    @db.Float
+  created_at                DateTime @db.DateTime(6)
+  updated_at                DateTime @db.DateTime(6)
+
+  @@id([racer_registration_number, date])
+}
+
+model racer_winning_rate_aggregations {
+  racer_registration_number   Int
+  aggregated_on               DateTime @db.Date
+  rate_in_all_stadium         Float    @db.Float
+  rate_in_event_going_stadium Float    @db.Float
+  created_at                  DateTime @db.DateTime(6)
+  updated_at                  DateTime @db.DateTime(6)
+
+  @@id([racer_registration_number, aggregated_on])
+}
+
+model racers {
+  registration_number Int       @id @default(autoincrement())
+  last_name           String    @default("") @db.VarChar(255)
+  first_name          String    @default("") @db.VarChar(255)
+  gender              Gender?
+  term                Int?
+  birth_date          DateTime? @db.Date
+  branch_id           Int?
+  birth_prefecture_id Int?
+  height              Int?
+  status              RacerStatus?
+  created_at          DateTime  @db.DateTime(6)
+  updated_at          DateTime  @db.DateTime(6)
+}
+
+model races {
+  stadium_tel_code    Int
+  date                DateTime @db.Date
+  race_number         Int
+  title               String   @db.VarChar(255)
+  course_fixed        Boolean  @default(false)
+  use_stabilizer      Boolean  @default(false)
+  number_of_laps      Int      @default(3)
+  betting_deadline_at DateTime @db.DateTime(0)
+  canceled            Boolean  @default(false)
+  created_at          DateTime @db.DateTime(6)
+  updated_at          DateTime @db.DateTime(6)
+  stadiums            stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_5e85267f3d")
+
+  @@id([stadium_tel_code, date, race_number])
+  @@index([betting_deadline_at], map: "index_races_on_betting_deadline_at")
+}
+
+model stadiums {
+  tel_code                                   Int                                          @id @default(autoincrement())
+  name                                       String                                       @db.VarChar(255)
+  prefecture_id                              Int
+  water_quality                              WaterQuality
+  tide_fluctuation                           Boolean
+  lat                                        Float                                        @db.Float
+  lng                                        Float                                        @db.Float
+  elevation                                  Float                                        @db.Float
+  created_at                                 DateTime                                     @db.DateTime(6)
+  updated_at                                 DateTime                                     @db.DateTime(6)
+  boat_betting_contribute_rate_aggregations  boat_betting_contribute_rate_aggregations[]
+  boat_settings                              boat_settings[]
+  circumference_exhibition_records           circumference_exhibition_records[]
+  disqualified_race_entries                  disqualified_race_entries[]
+  events                                     events[]
+  motor_betting_contribute_rate_aggregations motor_betting_contribute_rate_aggregations[]
+  motor_maintenances                         motor_maintenances[]
+  motor_renewals                             motor_renewals[]
+  odds                                       odds[]
+  payoffs                                    payoffs[]
+  race_entries                               race_entries[]
+  race_records                               race_records[]
+  races                                      races[]
+  start_exhibition_records                   start_exhibition_records[]
+  weather_conditions                         weather_conditions[]
+  winning_race_entries                       winning_race_entries[]
+}
+
+model start_exhibition_records {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  pit_number       Int
+  course_number    Int
+  start_time       Float    @db.Float
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_7c18e9d9fb")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+}
+
+model weather_conditions {
+  stadium_tel_code  Int
+  date              DateTime @db.Date
+  race_number       Int
+  in_performance    Boolean
+  weather           Weather
+  wind_velocity     Float    @db.Float
+  wind_angle        Float?   @db.Float
+  wavelength        Float?   @db.Float
+  air_temperature   Float    @db.Float
+  water_temperature Float    @db.Float
+  created_at        DateTime @db.DateTime(6)
+  updated_at        DateTime @db.DateTime(6)
+  stadiums          stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_5914ca6208")
+
+  @@id([stadium_tel_code, date, race_number, in_performance])
+}
+
+model winning_race_entries {
+  stadium_tel_code Int
+  date             DateTime @db.Date
+  race_number      Int
+  pit_number       Int
+  winning_trick    WinningTrick
+  created_at       DateTime @db.DateTime(6)
+  updated_at       DateTime @db.DateTime(6)
+  stadiums         stadiums @relation(fields: [stadium_tel_code], references: [tel_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_9fbec16230")
+
+  @@id([stadium_tel_code, date, race_number, pit_number])
+}
